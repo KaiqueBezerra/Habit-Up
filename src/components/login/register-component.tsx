@@ -50,7 +50,7 @@ export default function Register() {
 
       await register(data.email, data.password, data.name);
 
-      router.replace("/");
+      router.replace("/(tabs)/home");
     } catch (error) {
       setFirebaseError(error);
     }

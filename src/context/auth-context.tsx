@@ -1,22 +1,22 @@
 import {
-    createContext,
-    useContext,
-    useEffect,
-    useState,
-    type ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
 } from "react";
 
 import { auth } from "@/firebase/firebase";
 import {
-    createUserWithEmailAndPassword,
-    deleteUser,
-    onAuthStateChanged,
-    sendEmailVerification,
-    sendPasswordResetEmail,
-    signInWithEmailAndPassword,
-    signOut,
-    updateProfile,
-    type User,
+  createUserWithEmailAndPassword,
+  deleteUser,
+  onAuthStateChanged,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+  type User,
 } from "firebase/auth";
 
 interface AuthContextType {
@@ -94,15 +94,11 @@ export function AuthProvider({ children }: Props) {
   async function verifyEmail() {
     if (!auth.currentUser) return;
 
-    await sendEmailVerification(auth.currentUser, {
-      url: "https://fir-app-d01b4.web.app/app",
-    });
+    await sendEmailVerification(auth.currentUser);
   }
 
   async function resetPassword(email: string) {
-    await sendPasswordResetEmail(auth, email, {
-      url: "https://fir-app-d01b4.web.app/",
-    });
+    await sendPasswordResetEmail(auth, email);
   }
 
   return (

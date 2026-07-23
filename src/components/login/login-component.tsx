@@ -43,7 +43,7 @@ export default function LoginComponent() {
 
       await login(data.email, data.password);
 
-      router.replace("/");
+      router.replace("/(tabs)/home");
     } catch (error) {
       setFirebaseError(error);
     }

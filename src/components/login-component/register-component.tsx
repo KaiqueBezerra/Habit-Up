@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import z from "zod";
+import { ShowError } from "../show-error/show-error";
 
 const registerSchema = z.object({
   name: z
@@ -28,7 +29,7 @@ export default function Register() {
   const { register } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [firebaseError, setFirebaseError] = useState("");
+  const [firebaseError, setFirebaseError] = useState<unknown>(null);
 
   const {
     control,
@@ -51,7 +52,7 @@ export default function Register() {
 
       router.replace("/");
     } catch (error) {
-      setFirebaseError("Não foi possível criar a conta.");
+      setFirebaseError(error);
     }
   }
 
@@ -108,9 +109,7 @@ export default function Register() {
             )}
           />
 
-          {errors.email && (
-            <Text className="mt-1 text-red-500">{errors.email.message}</Text>
-          )}
+          <ShowError error={errors.email} />
         </View>
 
         <View>
@@ -144,14 +143,10 @@ export default function Register() {
             </Pressable>
           </View>
 
-          {errors.password && (
-            <Text className="mt-1 text-red-500">{errors.password.message}</Text>
-          )}
+          <ShowError error={errors.password} />
         </View>
 
-        {firebaseError.length > 0 && (
-          <Text className="text-center text-red-500">{firebaseError}</Text>
-        )}
+        <ShowError error={firebaseError} />
 
         <Pressable
           disabled={isSubmitting}

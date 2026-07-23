@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { z } from "zod";
+import { ShowError } from "../show-error/show-error";
 
 const loginSchema = z.object({
   email: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),
@@ -22,7 +23,7 @@ export default function LoginComponent() {
   const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [firebaseError, setFirebaseError] = useState("");
+  const [firebaseError, setFirebaseError] = useState<unknown>(null);
 
   const {
     control,
@@ -43,8 +44,8 @@ export default function LoginComponent() {
       await login(data.email, data.password);
 
       router.replace("/");
-    } catch {
-      setFirebaseError("Não foi possível entrar com a conta.");
+    } catch (error) {
+      setFirebaseError(error);
     }
   }
 
@@ -59,8 +60,6 @@ export default function LoginComponent() {
       </View>
 
       <View className="gap-5">
-        {/* Email */}
-
         <View>
           <Text className="mb-2 text-sm font-medium text-zinc-300">E-mail</Text>
 
@@ -80,14 +79,8 @@ export default function LoginComponent() {
             )}
           />
 
-          {errors.email && (
-            <Text className="mt-1 text-sm text-red-500">
-              {errors.email.message}
-            </Text>
-          )}
+          <ShowError error={errors.email} />
         </View>
-
-        {/* Senha */}
 
         <View>
           <Text className="mb-2 text-sm font-medium text-zinc-300">Senha</Text>
@@ -120,17 +113,11 @@ export default function LoginComponent() {
             </Pressable>
           </View>
 
-          {errors.password && (
-            <Text className="mt-1 text-sm text-red-500">
-              {errors.password.message}
-            </Text>
-          )}
+          <ShowError error={errors.password} />
         </View>
       </View>
 
-      {firebaseError.length > 0 && (
-        <Text className="mt-5 text-center text-red-500">{firebaseError}</Text>
-      )}
+      <ShowError error={firebaseError} />
 
       <Pressable
         className="mt-4 self-end"

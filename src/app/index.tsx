@@ -1,9 +1,18 @@
-import { Text, View } from "react-native";
+import { Redirect } from "expo-router";
+
+import { Loading } from "@/components/loading/loading";
+import { useAuth } from "@/context/auth-context";
 
 export default function Index() {
-  return (
-    <View className="flex justify-center items-center h-full">
-      <Text className="text-red-800">Habit Up.</Text>
-    </View>
-  );
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <Loading text="Carregando..." />;
+  }
+
+  if (user) {
+    return <Redirect href="/(app)/home" />;
+  }
+
+  return <Redirect href="/(auth)/login" />;
 }

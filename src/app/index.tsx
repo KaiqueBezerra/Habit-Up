@@ -1,6 +1,6 @@
 import { Redirect } from "expo-router";
 
-import { Loading } from "@/components/loading/loading";
+import { Loading } from "@/components/ui/loading/loading";
 import { useAuth } from "@/context/auth-context";
 
 export default function Index() {

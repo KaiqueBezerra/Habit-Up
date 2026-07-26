@@ -51,18 +51,16 @@ export function AuthProvider({ children }: Props) {
     return unsubscribe;
   }, []);
 
-  async function register(email: string, password: string, name?: string) {
+  async function register(email: string, password: string, name: string) {
     const { user } = await createUserWithEmailAndPassword(
       auth,
       email,
       password,
     );
 
-    if (name?.trim()) {
-      await updateProfile(user, {
-        displayName: name,
-      });
-    }
+    await updateProfile(user, {
+      displayName: name,
+    });
   }
 
   async function updateUserProfile(displayName: string) {
@@ -84,11 +82,7 @@ export function AuthProvider({ children }: Props) {
   }
 
   async function logout() {
-    try {
-      await signOut(auth);
-    } catch (error) {
-      console.error("Falha ao sair: ", error);
-    }
+    await signOut(auth);
   }
 
   async function verifyEmail() {

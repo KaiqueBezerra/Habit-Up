@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { z } from "zod";
-import { ShowError } from "../show-error/show-error";
+import { ShowError } from "../ui/show-error/show-error";
 
 export const forgotPasswordSchema = z.object({
   email: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),

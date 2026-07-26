@@ -1,9 +1,9 @@
 import { Tabs } from "expo-router";
 import {
-    ChartColumn,
-    CircleUserRound,
-    House,
-    NotebookPen,
+  ChartColumn,
+  CircleUserRound,
+  House,
+  NotebookPen,
 } from "lucide-react-native";
 
 export default function TabsLayout() {

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { z } from "zod";
-import { ShowError } from "../show-error/show-error";
+import { ShowError } from "../ui/show-error/show-error";
 
 const loginSchema = z.object({
   email: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),
@@ -43,7 +43,7 @@ export default function LoginComponent() {
 
       await login(data.email, data.password);
 
-      router.replace("/(tabs)/home");
+      router.push("/(tabs)/home");
     } catch (error) {
       setFirebaseError(error);
     }

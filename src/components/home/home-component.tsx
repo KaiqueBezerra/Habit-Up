@@ -15,7 +15,7 @@ export function HomeComponent() {
 
       await logout();
 
-      router.replace("/");
+      router.push("/");
     } catch (error) {
       setFirebaseError("Não foi possível deslogar.");
     }

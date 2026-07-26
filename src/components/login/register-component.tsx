@@ -6,14 +6,13 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import z from "zod";
-import { ShowError } from "../show-error/show-error";
+import { ShowError } from "../ui/show-error/show-error";
 
 const registerSchema = z.object({
   name: z
     .string()
-    .max(20, "Nome deve ter no máximo 20 caracteres")
-    .optional()
-    .or(z.literal("")),
+    .min(2, "Nome deve ter no mínimo 2 caracteres")
+    .max(20, "Nome deve ter no máximo 20 caracteres"),
 
   email: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),
 
@@ -50,7 +49,7 @@ export default function Register() {
 
       await register(data.email, data.password, data.name);
 
-      router.replace("/(tabs)/home");
+      router.push("/(tabs)/home");
     } catch (error) {
       setFirebaseError(error);
     }
@@ -85,9 +84,7 @@ export default function Register() {
             )}
           />
 
-          {errors.name && (
-            <Text className="mt-1 text-red-500">{errors.name.message}</Text>
-          )}
+          <ShowError error={errors.name} />
         </View>
 
         <View>

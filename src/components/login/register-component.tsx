@@ -4,7 +4,14 @@ import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import {
+  Keyboard,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import z from "zod";
 import { ShowError } from "../ui/show-error/show-error";
 
@@ -47,6 +54,8 @@ export default function Register() {
     try {
       setFirebaseError("");
 
+      Keyboard.dismiss();
+
       await register(data.email, data.password, data.name);
 
       router.push("/(tabs)/home");
@@ -79,6 +88,7 @@ export default function Register() {
                 onChangeText={field.onChange}
                 placeholder="Digite seu nome"
                 placeholderTextColor="#71717A"
+                maxLength={20}
                 className="rounded-2xl border border-zinc-800 bg-zinc-900 px-5 py-4 text-white"
               />
             )}

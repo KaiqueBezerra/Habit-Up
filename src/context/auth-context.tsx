@@ -30,6 +30,7 @@ interface AuthContextType {
   verifyEmail(): Promise<void>;
   updateUserProfile(displayName: string): Promise<void>;
   deleteUserProfile(): Promise<void>;
+  reloadUser(): Promise<void>;
 }
 
 const AuthContext = createContext({} as AuthContextType);
@@ -95,6 +96,13 @@ export function AuthProvider({ children }: Props) {
     await sendPasswordResetEmail(auth, email);
   }
 
+  async function reloadUser() {
+    if (!auth.currentUser) return;
+
+    await auth.currentUser.reload();
+    setUser(auth.currentUser);
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -107,6 +115,7 @@ export function AuthProvider({ children }: Props) {
         verifyEmail,
         updateUserProfile,
         deleteUserProfile,
+        reloadUser,
       }}
     >
       {children}

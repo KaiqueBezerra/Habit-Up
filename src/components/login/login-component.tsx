@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { z } from "zod";
 import { ShowError } from "../ui/show-error/show-error";
 
@@ -40,6 +40,8 @@ export default function LoginComponent() {
   async function handleLogin(data: LoginFormData) {
     try {
       setFirebaseError("");
+
+      Keyboard.dismiss();
 
       await login(data.email, data.password);
 

@@ -19,10 +19,15 @@ export function getFirebaseErrorMessage(error: unknown) {
       case "auth/requires-recent-login":
         return "Faça login novamente para concluir esta operação.";
 
+      case "auth/too-many-requests":
+        return "Muitas tentativas. Tente novamente em alguns minutos.";
+
       default:
+        console.log(error);
         return "Algo deu errado. Tente novamente.";
     }
   }
 
+  console.log(error);
   return "Algo deu errado. Tente novamente.";
 }

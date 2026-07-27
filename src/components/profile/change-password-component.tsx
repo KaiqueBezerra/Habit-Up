@@ -86,7 +86,10 @@ export function ChangePasswordComponent() {
               </Text>
             </Pressable>
 
-            <Pressable className="mt-5" onPress={() => router.back()}>
+            <Pressable
+              className="mt-5"
+              onPress={() => router.push("/(tabs)/profile")}
+            >
               <Text className="text-center font-semibold text-emerald-400">
                 Voltar
               </Text>

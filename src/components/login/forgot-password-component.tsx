@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { z } from "zod";
 import { ShowError } from "../ui/show-error/show-error";
 
@@ -33,6 +33,8 @@ export function ForgotPasswordComponent() {
   async function handleResetPassword(data: ForgotPasswordFormData) {
     try {
       setFirebaseError("");
+
+      Keyboard.dismiss();
 
       await resetPassword(data.email);
       setEmailSent(true);

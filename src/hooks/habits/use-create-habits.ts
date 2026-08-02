@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/auth-provider";
 import { queryClient } from "@/lib/react-query";
-import { HabitService } from "@/services/habits/habits-service";
+import { createHabit } from "@/services/habits/habits-service";
 import { Habit } from "@/services/habits/types";
 import { useMutation } from "@tanstack/react-query";
 
@@ -13,7 +13,7 @@ export function useCreateHabit() {
 
   return useMutation({
     mutationFn: (data: Omit<Habit, "id" | "createdAt" | "updatedAt">) =>
-      HabitService.create(data, user?.uid),
+      createHabit(data, user?.uid),
 
     onSuccess() {
       queryClient.invalidateQueries({

@@ -6,6 +6,6 @@ export function useReloadUser() {
   const { reloadUser } = useAuth();
 
   return useMutation<void, FirebaseError>({
-    mutationFn: reloadUser,
+    mutationFn: () => reloadUser(),
   });
 }

@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/auth-provider";
-import { HabitService } from "@/services/habits/habits-service";
+import { getHabits } from "@/services/habits/habits-service";
 import { useQuery } from "@tanstack/react-query";
 
 export function useGetHabits() {
@@ -14,6 +14,6 @@ export function useGetHabits() {
 
     enabled: !!user,
 
-    queryFn: () => HabitService.getAll(user?.uid),
+    queryFn: () => getHabits(user?.uid),
   });
 }

@@ -13,52 +13,51 @@ import {
 import { db } from "@/firebase/firebase";
 import type { Habit } from "./types";
 
-export class HabitService {
-  private static getCollection(uid: string) {
-    if (!uid) {
-      throw new Error("Usuário não autenticado.");
-    }
-
-    return collection(db, "users", uid, "habits");
+function getCollection(uid: string) {
+  if (!uid) {
+    throw new Error("Usuário não autenticado.");
   }
 
-  static async create(
-    data: Omit<Habit, "id" | "createdAt" | "updatedAt">,
-    uid: string,
-  ) {
-    await addDoc(this.getCollection(uid), {
+  return collection(db, "users", uid, "habits");
+}
+
+export async function createHabit(
+  data: Omit<Habit, "id" | "createdAt" | "updatedAt">,
+  uid: string,
+) {
+  const payload = Object.fromEntries(
+    Object.entries({
       ...data,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
-    });
-  }
+    }).filter(([, value]) => value !== undefined),
+  );
 
-  static async getAll(uid: string): Promise<Habit[]> {
-    const habitsQuery = query(
-      this.getCollection(uid),
-      orderBy("createdAt", "desc"),
-    );
+  return addDoc(getCollection(uid), payload);
+}
 
-    const snapshot = await getDocs(habitsQuery);
+export async function getHabits(uid: string): Promise<Habit[]> {
+  const habitsQuery = query(getCollection(uid), orderBy("createdAt", "desc"));
 
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Habit[];
-  }
+  const snapshot = await getDocs(habitsQuery);
 
-  static async update(
-    id: string,
-    data: Partial<Omit<Habit, "id" | "createdAt">>,
-    uid: string,
-  ) {
-    await updateDoc(doc(this.getCollection(uid), id), {
-      ...data,
-      updatedAt: serverTimestamp(),
-    });
-  }
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as Habit[];
+}
 
-  static async delete(id: string, uid: string) {
-    await deleteDoc(doc(this.getCollection(uid), id));
-  }
+export async function updateHabit(
+  id: string,
+  data: Partial<Omit<Habit, "id" | "createdAt">>,
+  uid: string,
+) {
+  await updateDoc(doc(getCollection(uid), id), {
+    ...data,
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function deleteHabit(id: string, uid: string) {
+  await deleteDoc(doc(getCollection(uid), id));
 }

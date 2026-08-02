@@ -1,16 +1,16 @@
-export interface Habit {
+import { Timestamp } from "firebase/firestore";
+
+export type Habit = {
   id: string;
   title: string;
   description?: string;
-
   icon: string;
   color: string;
-
-  frequency: "daily" | "weekly";
-
-  reminderEnabled: boolean;
+  daysOfWeek: number[];
   reminderTime?: string;
-
-  createdAt: Date;
-  updatedAt: Date;
-}
+  goalType: "boolean" | "number";
+  goalValue?: number;
+  goalUnit?: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+};

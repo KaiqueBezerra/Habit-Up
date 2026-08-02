@@ -1,4 +1,4 @@
-import { AuthService } from "@/services/auth/auth-service";
+import { login } from "@/services/auth/auth-service";
 import { useMutation } from "@tanstack/react-query";
 
 type LoginData = {
@@ -8,7 +8,6 @@ type LoginData = {
 
 export function useLogin() {
   return useMutation({
-    mutationFn: ({ email, password }: LoginData) =>
-      AuthService.login(email, password),
+    mutationFn: ({ email, password }: LoginData) => login(email, password),
   });
 }

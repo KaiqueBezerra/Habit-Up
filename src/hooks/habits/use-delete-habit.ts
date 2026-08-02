@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/auth-provider";
 import { queryClient } from "@/lib/react-query";
-import { HabitService } from "@/services/habits/habits-service";
+import { deleteHabit } from "@/services/habits/habits-service";
 import { useMutation } from "@tanstack/react-query";
 
 export function useDeleteHabit() {
@@ -11,7 +11,7 @@ export function useDeleteHabit() {
   }
 
   return useMutation({
-    mutationFn: (id: string) => HabitService.delete(id, user?.uid),
+    mutationFn: (id: string) => deleteHabit(id, user?.uid),
 
     onSuccess() {
       queryClient.invalidateQueries({

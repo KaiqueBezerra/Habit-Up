@@ -22,12 +22,15 @@ export function getFirebaseErrorMessage(error: unknown) {
       case "auth/too-many-requests":
         return "Muitas tentativas. Tente novamente em alguns minutos.";
 
+      case "Missing or insufficient permissions":
+        return "Permissões insuficientes para realizar esta operação.";
+
       default:
-        console.log(error);
+        console.error(error);
         return "Algo deu errado. Tente novamente.";
     }
   }
 
-  console.log(error);
+  console.error(error);
   return "Algo deu errado. Tente novamente.";
 }

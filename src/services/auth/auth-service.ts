@@ -1,48 +1,68 @@
-import { auth } from "@/firebase/firebase";
+import { auth, db } from "@/firebase/firebase";
 import {
-    createUserWithEmailAndPassword,
-    deleteUser,
-    sendEmailVerification,
-    sendPasswordResetEmail,
-    signInWithEmailAndPassword,
-    signOut,
-    updateProfile,
+  createUserWithEmailAndPassword,
+  deleteUser,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
 } from "firebase/auth";
+import { doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 
-export const AuthService = {
-  login(email: string, password: string) {
-    return signInWithEmailAndPassword(auth, email, password);
-  },
+export async function login(email: string, password: string) {
+  return signInWithEmailAndPassword(auth, email, password);
+}
 
-  register(email: string, password: string) {
-    return createUserWithEmailAndPassword(auth, email, password);
-  },
+export async function register(
+  email: string,
+  password: string,
+  displayName: string,
+) {
+  const { user } = await createUserWithEmailAndPassword(auth, email, password);
+  await updateProfile(user, { displayName });
 
-  logout() {
-    return signOut(auth);
-  },
+  await setDoc(doc(db, "users", user.uid), {
+    uid: user.uid,
+    displayName,
+    email,
+    createdAt: serverTimestamp(),
+  });
 
-  verifyEmail() {
-    if (!auth.currentUser) throw new Error();
+  return user;
+}
 
-    return sendEmailVerification(auth.currentUser);
-  },
+export async function logout() {
+  return signOut(auth);
+}
 
-  resetPassword(email: string) {
-    return sendPasswordResetEmail(auth, email);
-  },
+export async function verifyEmail() {
+  if (!auth.currentUser) throw new Error();
 
-  updateProfile(displayName: string) {
-    if (!auth.currentUser) throw new Error();
+  return sendEmailVerification(auth.currentUser);
+}
 
-    return updateProfile(auth.currentUser, {
-      displayName,
-    });
-  },
+export async function resetPassword(email: string) {
+  return sendPasswordResetEmail(auth, email);
+}
 
-  deleteAccount() {
-    if (!auth.currentUser) throw new Error();
+export async function updateUserProfile(displayName: string) {
+  if (!auth.currentUser) {
+    throw new Error("Usuário não autenticado.");
+  }
 
-    return deleteUser(auth.currentUser);
-  },
-};
+  await updateProfile(auth.currentUser, {
+    displayName,
+  });
+
+  await updateDoc(doc(db, "users", auth.currentUser.uid), {
+    displayName,
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function deleteAccount() {
+  if (!auth.currentUser) throw new Error();
+
+  return deleteUser(auth.currentUser);
+}

@@ -1,7 +1,7 @@
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/auth-provider";
+import { useUpdateProfile } from "@/hooks/auth/use-update-user";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import z from "zod";
@@ -17,9 +17,9 @@ const editProfileSchema = z.object({
 type EditProfileFormData = z.infer<typeof editProfileSchema>;
 
 export function EditProfileComponent() {
-  const { user, updateUserProfile } = useAuth();
+  const { user } = useAuth();
 
-  const [firebaseError, setFirebaseError] = useState<unknown>(null);
+  const updateProfile = useUpdateProfile();
 
   const {
     control,
@@ -34,16 +34,10 @@ export function EditProfileComponent() {
 
   async function handleEditProfile(data: EditProfileFormData) {
     try {
-      setFirebaseError("");
-
       Keyboard.dismiss();
-
-      await updateUserProfile(data.name);
-
+      await updateProfile.mutateAsync(data.name);
       router.push("/(tabs)/profile");
-    } catch (error) {
-      setFirebaseError(error);
-    }
+    } catch {}
   }
 
   return (
@@ -88,7 +82,7 @@ export function EditProfileComponent() {
         </View>
       </View>
 
-      <ShowError error={firebaseError} />
+      <ShowError error={updateProfile.error} />
 
       <View>
         <Pressable

@@ -1,24 +1,20 @@
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/auth-provider";
+import { useLogout } from "@/hooks/auth/use-logout";
 import { router } from "expo-router";
-import { useState } from "react";
 import { View } from "react-native";
 import { Greetings } from "./greetings";
 
 export function HomeComponent() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
-  const [firebaseError, setFirebaseError] = useState("");
+  const logout = useLogout();
 
   async function handleLogout() {
     try {
-      setFirebaseError("");
-
-      await logout();
+      await logout.mutateAsync();
 
       router.push("/");
-    } catch (error) {
-      setFirebaseError("Não foi possível deslogar.");
-    }
+    } catch {}
   }
 
   return (

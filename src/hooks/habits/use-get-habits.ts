@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/auth-provider";
 import { HabitService } from "@/services/habits/habits-service";
 import { useQuery } from "@tanstack/react-query";
 

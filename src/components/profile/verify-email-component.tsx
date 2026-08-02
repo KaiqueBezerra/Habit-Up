@@ -1,50 +1,33 @@
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/auth-provider";
+import { useReloadUser } from "@/hooks/auth/use-reload-user";
+import { useVerifyEmail } from "@/hooks/auth/use-verify-email";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { ShowError } from "../ui/show-error/show-error";
 
 export function VerifyEmailComponent() {
-  const { user, verifyEmail, reloadUser } = useAuth();
+  const { user } = useAuth();
 
-  const [loading, setLoading] = useState(false);
+  const verifyEmail = useVerifyEmail();
+  const reloadUser = useReloadUser();
+
   const [emailSent, setEmailSent] = useState(false);
-  const [firebaseError, setFirebaseError] = useState<unknown>(null);
 
   async function handleVerifyEmail() {
-    if (!user?.email) {
-      setFirebaseError("Usuário inválido.");
-      return;
-    }
     try {
-      setLoading(true);
-      setFirebaseError("");
+      await verifyEmail.mutateAsync();
 
-      await verifyEmail();
       setEmailSent(true);
-    } catch (error) {
-      setFirebaseError(error);
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   }
 
   async function handleReloadUser() {
-    if (!user?.email) {
-      setFirebaseError("Usuário inválido.");
-      return;
-    }
     try {
-      setLoading(true);
-      setFirebaseError("");
+      await reloadUser.mutateAsync();
 
-      await reloadUser();
-      router.push("/(tabs)/profile");
-    } catch (error) {
-      setFirebaseError(error);
-    } finally {
-      setLoading(false);
-    }
+      router.back();
+    } catch {}
   }
 
   if (user?.emailVerified) {
@@ -121,7 +104,7 @@ export function VerifyEmailComponent() {
         </View>
       )}
 
-      <ShowError error={firebaseError} />
+      <ShowError error={verifyEmail.error ?? reloadUser.error} />
 
       <View>
         {emailSent ? (
@@ -147,14 +130,14 @@ export function VerifyEmailComponent() {
         ) : (
           <>
             <Pressable
-              disabled={loading}
+              disabled={verifyEmail.isPending}
               onPress={() => handleVerifyEmail()}
               className={`mt-10 rounded-2xl bg-emerald-500 py-4 ${
-                loading ? "opacity-60" : ""
+                verifyEmail.isPending ? "opacity-60" : ""
               }`}
             >
               <Text className="text-center text-lg font-semibold text-white">
-                {loading ? "Enviando..." : "Enviar e-mail"}
+                {verifyEmail.isPending ? "Enviando..." : "Enviar e-mail"}
               </Text>
             </Pressable>
 

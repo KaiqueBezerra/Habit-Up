@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/auth-provider";
 import { router } from "expo-router";
 import { KeyRound, MailCheck, SquareCheck, UserPen } from "lucide-react-native";
 import { Text, View } from "react-native";

@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/auth-context";
+import { useLogin } from "@/hooks/auth/use-login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
@@ -20,10 +20,9 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginComponent() {
-  const { login } = useAuth();
+  const login = useLogin();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [firebaseError, setFirebaseError] = useState<unknown>(null);
 
   const {
     control,
@@ -39,16 +38,12 @@ export default function LoginComponent() {
 
   async function handleLogin(data: LoginFormData) {
     try {
-      setFirebaseError("");
-
       Keyboard.dismiss();
 
-      await login(data.email, data.password);
+      await login.mutateAsync(data);
 
       router.push("/(tabs)/home");
-    } catch (error) {
-      setFirebaseError(error);
-    }
+    } catch {}
   }
 
   return (
@@ -119,7 +114,7 @@ export default function LoginComponent() {
         </View>
       </View>
 
-      <ShowError error={firebaseError} />
+      <ShowError error={login.error} />
 
       <Pressable
         className="mt-4 self-end"

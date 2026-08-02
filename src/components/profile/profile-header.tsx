@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/auth-provider";
 import { Text, View } from "react-native";
 
 export function ProfileHeader() {

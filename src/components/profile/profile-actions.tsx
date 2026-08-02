@@ -1,4 +1,5 @@
-import { useAuth } from "@/context/auth-context";
+import { useDeleteAccount } from "@/hooks/auth/use-delete-account";
+import { useLogout } from "@/hooks/auth/use-logout";
 import { router } from "expo-router";
 import { LogOut, Trash2 } from "lucide-react-native";
 import { useState } from "react";
@@ -6,39 +7,24 @@ import { Pressable, Text, View } from "react-native";
 import { ConfirmModal } from "../ui/confirm-modal/confirm-modal";
 
 export function ProfileActions() {
-  const { logout, deleteUserProfile } = useAuth();
+  const logout = useLogout();
+  const deleteAccount = useDeleteAccount();
 
-  const [loading, setLoading] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [firebaseError, setFirebaseError] = useState<unknown>(null);
 
   async function handleLogout() {
     try {
-      setLoading(true);
-      setFirebaseError("");
-
-      await logout();
+      await logout.mutateAsync();
       router.push("/(auth)/login");
-    } catch (error) {
-      setFirebaseError(error);
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   }
 
   async function handleDeleteAccount() {
     try {
-      setLoading(true);
-      setFirebaseError("");
-
-      await deleteUserProfile();
+      await deleteAccount.mutateAsync();
       router.push("/(auth)/login");
-    } catch (error) {
-      setFirebaseError(error);
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   }
 
   return (
@@ -66,7 +52,7 @@ export function ProfileActions() {
         title="Sair da conta"
         message="Tem certeza que deseja sair da sua conta?"
         confirmText="Sair"
-        loading={loading}
+        loading={logout.isPending}
         onClose={() => setLogoutModalOpen(false)}
         onConfirm={handleLogout}
       />
@@ -77,8 +63,8 @@ export function ProfileActions() {
         message="Esta ação é permanente e não poderá ser desfeita."
         confirmText="Excluir"
         danger
-        loading={loading}
-        error={firebaseError}
+        loading={deleteAccount.isPending}
+        error={deleteAccount.error}
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleDeleteAccount}
       />

@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/auth-context";
+import { useRegister } from "@/hooks/auth/use-register";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { Eye, EyeOff } from "lucide-react-native";
@@ -32,10 +32,9 @@ const registerSchema = z.object({
 type registerFormData = z.infer<typeof registerSchema>;
 
 export default function Register() {
-  const { register } = useAuth();
+  const register = useRegister();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [firebaseError, setFirebaseError] = useState<unknown>(null);
 
   const {
     control,
@@ -52,16 +51,12 @@ export default function Register() {
 
   async function handleRegister(data: registerFormData) {
     try {
-      setFirebaseError("");
-
       Keyboard.dismiss();
 
-      await register(data.email, data.password, data.name);
+      await register.mutateAsync(data);
 
       router.push("/(tabs)/home");
-    } catch (error) {
-      setFirebaseError(error);
-    }
+    } catch {}
   }
 
   return (
@@ -153,7 +148,7 @@ export default function Register() {
           <ShowError error={errors.password} />
         </View>
 
-        <ShowError error={firebaseError} />
+        <ShowError error={register.error} />
 
         <Pressable
           disabled={isSubmitting}

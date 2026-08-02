@@ -1,4 +1,4 @@
-import { useAuth } from "@/context/auth-context";
+import { useResetPassword } from "@/hooks/auth/use-reset-password";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -15,9 +15,8 @@ export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export function ForgotPasswordComponent() {
   const [emailSent, setEmailSent] = useState(false);
-  const [firebaseError, setFirebaseError] = useState<unknown>(null);
 
-  const { resetPassword } = useAuth();
+  const resetPassword = useResetPassword();
 
   const {
     control,
@@ -32,15 +31,11 @@ export function ForgotPasswordComponent() {
 
   async function handleResetPassword(data: ForgotPasswordFormData) {
     try {
-      setFirebaseError("");
-
       Keyboard.dismiss();
 
-      await resetPassword(data.email);
+      await resetPassword.mutateAsync(data.email);
       setEmailSent(true);
-    } catch (error) {
-      setFirebaseError(error);
-    }
+    } catch {}
   }
 
   return (
@@ -94,7 +89,7 @@ export function ForgotPasswordComponent() {
         </View>
       )}
 
-      <ShowError error={firebaseError} />
+      <ShowError error={resetPassword.error} />
 
       {emailSent ? (
         <Pressable

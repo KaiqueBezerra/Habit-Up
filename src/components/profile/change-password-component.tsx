@@ -1,32 +1,26 @@
-import { useAuth } from "@/context/auth-context";
+import { useAuth } from "@/context/auth-provider";
+import { useResetPassword } from "@/hooks/auth/use-reset-password";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { ShowError } from "../ui/show-error/show-error";
 
 export function ChangePasswordComponent() {
-  const { user, resetPassword } = useAuth();
+  const { user } = useAuth();
 
-  const [loading, setLoading] = useState(false);
+  const resetPassword = useResetPassword();
+
   const [emailSent, setEmailSent] = useState(false);
-  const [firebaseError, setFirebaseError] = useState<unknown>(null);
 
   async function handleResetPassword() {
     if (!user?.email) {
-      setFirebaseError("Usuário inválido.");
       return;
     }
-    try {
-      setLoading(true);
-      setFirebaseError("");
 
-      await resetPassword(user?.email);
+    try {
+      await resetPassword.mutateAsync(user?.email);
       setEmailSent(true);
-    } catch (error) {
-      setFirebaseError(error);
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   }
 
   return (
@@ -60,7 +54,7 @@ export function ChangePasswordComponent() {
         </View>
       )}
 
-      <ShowError error={firebaseError} />
+      <ShowError error={resetPassword.error} />
 
       <View className="mt-6">
         {emailSent ? (
@@ -75,14 +69,14 @@ export function ChangePasswordComponent() {
         ) : (
           <>
             <Pressable
-              disabled={loading}
+              disabled={resetPassword.isPending}
               onPress={() => handleResetPassword()}
               className={`mt-10 rounded-2xl bg-emerald-500 py-4 ${
-                loading ? "opacity-60" : ""
+                resetPassword.isPending ? "opacity-60" : ""
               }`}
             >
               <Text className="text-center text-lg font-semibold text-white">
-                {loading ? "Enviando..." : "Enviar"}
+                {resetPassword.isPending ? "Enviando..." : "Enviar"}
               </Text>
             </Pressable>
 

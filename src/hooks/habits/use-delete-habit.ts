@@ -6,12 +6,8 @@ import { useMutation } from "@tanstack/react-query";
 export function useDeleteHabit() {
   const { user } = useAuth();
 
-  if (!user?.uid) {
-    throw new Error("Usuário não autenticado.");
-  }
-
   return useMutation({
-    mutationFn: (id: string) => deleteHabit(id, user?.uid),
+    mutationFn: (id: string) => deleteHabit(id, user!.uid),
 
     onSuccess() {
       queryClient.invalidateQueries({

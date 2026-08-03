@@ -1,5 +1,6 @@
 import { useDeleteAccount } from "@/hooks/auth/use-delete-account";
 import { useLogout } from "@/hooks/auth/use-logout";
+import { queryClient } from "@/lib/react-query";
 import { router } from "expo-router";
 import { LogOut, Trash2 } from "lucide-react-native";
 import { useState } from "react";
@@ -16,6 +17,7 @@ export function ProfileActions() {
   async function handleLogout() {
     try {
       await logout.mutateAsync();
+      queryClient.clear();
       router.push("/(auth)/login");
     } catch {}
   }

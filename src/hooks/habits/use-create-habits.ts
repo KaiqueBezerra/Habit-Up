@@ -7,13 +7,9 @@ import { useMutation } from "@tanstack/react-query";
 export function useCreateHabit() {
   const { user } = useAuth();
 
-  if (!user?.uid) {
-    throw new Error("Usuário não autenticado.");
-  }
-
   return useMutation({
     mutationFn: (data: Omit<Habit, "id" | "createdAt" | "updatedAt">) =>
-      createHabit(data, user?.uid),
+      createHabit(data, user!.uid),
 
     onSuccess() {
       queryClient.invalidateQueries({

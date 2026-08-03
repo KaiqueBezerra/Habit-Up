@@ -1,7 +1,7 @@
 import { ShowError } from "@/components/ui/show-error/show-error";
 import { Controller } from "react-hook-form";
 import { Pressable, Text, View } from "react-native";
-import { habitColors } from "./consts";
+import { habitColors } from "../consts";
 
 export function HabitColorPicker({ control, errors }: any) {
   return (

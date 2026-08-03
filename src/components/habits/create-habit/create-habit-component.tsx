@@ -22,9 +22,7 @@ const createHabitSchema = z
     description: z
       .string()
       .trim()
-      .max(150, "A descrição deve ter no máximo 150 caracteres")
-      .optional()
-      .or(z.literal("")),
+      .max(150, "A descrição deve ter no máximo 150 caracteres"),
     icon: z.string().min(1, "Selecione um ícone"),
     color: z.string().min(1, "Selecione uma cor"),
     daysOfWeek: z
@@ -32,12 +30,13 @@ const createHabitSchema = z
       .min(1, "Selecione pelo menos um dia da semana"),
     reminderTime: z
       .string()
-      .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, "Informe um horário válido")
-      .optional()
-      .or(z.literal("")),
+      .regex(/^$|^([01]\d|2[0-3]):([0-5]\d)$/, "Informe um horário válido"),
     goalType: z.enum(["boolean", "number"]),
     goalValue: z.number().positive().optional(),
-    goalUnit: z.string().optional().or(z.literal("")),
+    goalUnit: z
+      .string()
+      .trim()
+      .max(20, "A unidade deve ter no máximo 20 caracteres"),
   })
   .refine(
     (data) => {

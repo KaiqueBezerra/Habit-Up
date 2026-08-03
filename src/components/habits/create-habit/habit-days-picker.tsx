@@ -1,7 +1,7 @@
 import { ShowError } from "@/components/ui/show-error/show-error";
 import { Controller } from "react-hook-form";
 import { Pressable, Text, View } from "react-native";
-import { habitsDays } from "./consts";
+import { habitsDays } from "../consts";
 
 export function HabitDaysPicker({ control, errors }: any) {
   return (

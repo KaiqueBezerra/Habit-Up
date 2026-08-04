@@ -1,6 +1,9 @@
-import { useCreateHabit } from "@/hooks/habits/use-create-habits";
+import { Loading } from "@/components/ui/loading/loading";
+import { useGetHabit } from "@/hooks/habits/use-get-habit";
+import { useUpdateHabit } from "@/hooks/habits/use-update-habit";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import z from "zod";
@@ -12,7 +15,7 @@ import { HabitIconPicker } from "../habit-form/habit-icon-picker";
 import { HabitPreview } from "../habit-form/habit-preview";
 import { HabitReminderSection } from "../habit-form/habit-reminder-section";
 
-const createHabitSchema = z
+const updateHabitSchema = z
   .object({
     title: z
       .string()
@@ -55,16 +58,23 @@ const createHabitSchema = z
     },
   );
 
-type CreateHabitFormData = z.infer<typeof createHabitSchema>;
+type UpdateHabitFormData = z.infer<typeof updateHabitSchema>;
 
-export function CreateHabitComponent() {
+export function UpdateHabitComponent() {
+  const { id } = useLocalSearchParams<{
+    id: string;
+  }>();
+
+  const { data: habit, isLoading } = useGetHabit(id);
+
   const {
     control,
     watch,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
-  } = useForm<CreateHabitFormData>({
-    resolver: zodResolver(createHabitSchema),
+  } = useForm<UpdateHabitFormData>({
+    resolver: zodResolver(updateHabitSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -78,19 +88,39 @@ export function CreateHabitComponent() {
     },
   });
 
-  const createHabit = useCreateHabit();
+  const updateHabit = useUpdateHabit(id);
 
   const goalType = watch("goalType");
   const icon = watch("icon");
   const title = watch("title");
   const description = watch("description");
 
-  async function handleCreateHabit(data: CreateHabitFormData) {
+  async function handleUpdateHabit(data: UpdateHabitFormData) {
     try {
-      await createHabit.mutateAsync(data);
+      await updateHabit.mutateAsync(data);
 
       router.push("/(tabs)/habits");
     } catch {}
+  }
+
+  useEffect(() => {
+    if (!habit) return;
+
+    reset({
+      title: habit.title,
+      description: habit.description,
+      icon: habit.icon,
+      color: habit.color,
+      daysOfWeek: habit.daysOfWeek,
+      reminderTime: habit.reminderTime ?? "",
+      goalType: habit.goalType,
+      goalValue: habit.goalValue,
+      goalUnit: habit.goalUnit ?? "",
+    });
+  }, [habit, reset]);
+
+  if (isLoading) {
+    return <Loading />;
   }
 
   return (
@@ -99,9 +129,9 @@ export function CreateHabitComponent() {
       contentContainerClassName="pb-10"
     >
       <View>
-        <Text className="text-4xl font-bold text-white">Criar Hábito</Text>
+        <Text className="text-4xl font-bold text-white">Editar Hábito</Text>
         <Text className="mt-3 text-base text-zinc-400">
-          Crie um novo hábito para acompanhar.
+          Edite as informações do hábito.
         </Text>
       </View>
 
@@ -120,14 +150,14 @@ export function CreateHabitComponent() {
           <HabitPreview icon={icon} title={title} description={description} />
 
           <Pressable
-            onPress={handleSubmit(handleCreateHabit)}
+            onPress={handleSubmit(handleUpdateHabit)}
             disabled={isSubmitting}
             className={`rounded-2xl bg-emerald-500 py-4 ${
               isSubmitting && "opacity-60"
             }`}
           >
             <Text className="text-center text-lg font-semibold text-white">
-              {isSubmitting ? "Criando..." : "Criar hábito"}
+              {isSubmitting ? "Salvando..." : "Salvar alterações"}
             </Text>
           </Pressable>
         </View>

@@ -18,7 +18,7 @@ export function ProfileSection() {
         <ProfileItem
           title="Editar Perfil"
           icon={<UserPen color="white" size={20} />}
-          onPress={() => router.push("/(screens)/edit-profile")}
+          onPress={() => router.push("/(screens)/update-profile")}
         />
 
         <ProfileItem

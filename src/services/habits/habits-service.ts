@@ -3,6 +3,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -47,9 +48,25 @@ export async function getHabits(uid: string): Promise<Habit[]> {
   })) as Habit[];
 }
 
+export async function getHabitById(
+  id: string,
+  uid: string,
+): Promise<Habit | null> {
+  const snapshot = await getDoc(doc(getCollection(uid), id));
+
+  if (!snapshot.exists()) {
+    return null;
+  }
+
+  return {
+    id: snapshot.id,
+    ...snapshot.data(),
+  } as Habit;
+}
+
 export async function updateHabit(
   id: string,
-  data: Partial<Omit<Habit, "id" | "createdAt">>,
+  data: Partial<Omit<Habit, "id" | "createdAt" | "updatedAt">>,
   uid: string,
 ) {
   await updateDoc(doc(getCollection(uid), id), {

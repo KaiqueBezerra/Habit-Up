@@ -7,16 +7,16 @@ import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import z from "zod";
 import { ShowError } from "../ui/show-error/show-error";
 
-const editProfileSchema = z.object({
+const updateProfileSchema = z.object({
   name: z
     .string()
     .min(2, "Nome deve ter no mínimo 2 caracteres")
     .max(20, "Nome deve ter no máximo 20 caracteres"),
 });
 
-type EditProfileFormData = z.infer<typeof editProfileSchema>;
+type UpdateProfileFormData = z.infer<typeof updateProfileSchema>;
 
-export function EditProfileComponent() {
+export function UpdateProfileComponent() {
   const { user } = useAuth();
 
   const updateProfile = useUpdateProfile();
@@ -25,14 +25,14 @@ export function EditProfileComponent() {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<EditProfileFormData>({
-    resolver: zodResolver(editProfileSchema),
+  } = useForm<UpdateProfileFormData>({
+    resolver: zodResolver(updateProfileSchema),
     defaultValues: {
       name: user?.displayName ?? "",
     },
   });
 
-  async function handleEditProfile(data: EditProfileFormData) {
+  async function handleUpdateProfile(data: UpdateProfileFormData) {
     try {
       Keyboard.dismiss();
       await updateProfile.mutateAsync(data.name);
@@ -87,7 +87,7 @@ export function EditProfileComponent() {
       <View>
         <Pressable
           disabled={isSubmitting}
-          onPress={handleSubmit(handleEditProfile)}
+          onPress={handleSubmit(handleUpdateProfile)}
           className={`mt-10 rounded-2xl bg-emerald-500 py-4 ${
             isSubmitting ? "opacity-60" : ""
           }`}

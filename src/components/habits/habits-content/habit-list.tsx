@@ -52,7 +52,7 @@ export function HabitList({ habits }: HabitListProps) {
             goalUnit={item.goalUnit}
             onPress={() =>
               router.push({
-                pathname: "/habits",
+                pathname: "/(screens)/habit-details",
                 params: {
                   id: item.id,
                 },

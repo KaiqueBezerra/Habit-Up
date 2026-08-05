@@ -10,14 +10,14 @@ import "../styles/global.css";
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView className="flex-1 bg-zinc-950">
+    <SafeAreaView className="flex-1 bg-zinc-950">
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <Slot />
           </AuthProvider>
         </QueryClientProvider>
-      </SafeAreaView>
-    </GestureHandlerRootView>
+      </GestureHandlerRootView>
+    </SafeAreaView>
   );
 }

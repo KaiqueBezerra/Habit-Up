@@ -1,6 +1,7 @@
 import { useCreateHabit } from "@/hooks/habits/use-create-habits";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
+import { ArrowLeft } from "lucide-react-native";
 import { useForm } from "react-hook-form";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import z from "zod";
@@ -98,6 +99,15 @@ export function CreateHabitComponent() {
       className="flex-1 bg-zinc-950 px-6 pt-16"
       contentContainerClassName="pb-10"
     >
+      <View className="mb-8">
+        <Pressable
+          onPress={() => router.push("/(tabs)/habits")}
+          className="h-11 w-11 items-center justify-center rounded-full bg-zinc-900"
+        >
+          <ArrowLeft color="white" size={20} />
+        </Pressable>
+      </View>
+
       <View>
         <Text className="text-4xl font-bold text-white">Criar Hábito</Text>
         <Text className="mt-3 text-base text-zinc-400">

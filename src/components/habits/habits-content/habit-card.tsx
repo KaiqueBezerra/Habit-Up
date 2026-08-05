@@ -76,8 +76,8 @@ export function HabitCard({
           return (
             <View
               key={index}
-              className={`h-10 w-10 items-center justify-center rounded-full ${
-                selected ? "h-10 w-10 scale-105" : "h-9 w-9"
+              className={`h-11 w-11 items-center justify-center rounded-full ${
+                selected ? "" : "bg-zinc-800"
               }`}
               style={
                 selected

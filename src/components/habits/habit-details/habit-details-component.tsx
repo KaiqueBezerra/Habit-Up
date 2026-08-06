@@ -3,6 +3,8 @@ import { ConfirmModal } from "@/components/ui/confirm-modal/confirm-modal";
 import { Loading } from "@/components/ui/loading/loading";
 import { useDeleteHabit } from "@/hooks/habits/use-delete-habit";
 import { useGetHabit } from "@/hooks/habits/use-get-habit";
+import { useGetTodayCompletion } from "@/hooks/habits/use-get-today-completion";
+import { useToggleHabitCompletion } from "@/hooks/habits/use-toggle-habit-completion";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
@@ -19,10 +21,13 @@ export function HabitDetailsComponent() {
     id: string;
   }>();
 
-  const { data: habit, isLoading } = useGetHabit(id);
+  const { data: habit, isLoading: isHabitLoading } = useGetHabit(id);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
+  const toggleCompletion = useToggleHabitCompletion(id);
+
   const deleteHabit = useDeleteHabit();
+  const { data: completion } = useGetTodayCompletion(id);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -48,10 +53,13 @@ export function HabitDetailsComponent() {
     } catch {}
   }
 
-  if (isLoading) {
+  if (isHabitLoading) {
     return <Loading />;
   }
 
+  async function handleToggleCompletion() {
+    await toggleCompletion.mutateAsync();
+  }
   return (
     <View className="flex-1 bg-zinc-950">
       <ScrollView
@@ -79,11 +87,20 @@ export function HabitDetailsComponent() {
           goalValue={habit?.goalValue}
           goalUnit={habit?.goalUnit}
         />
-        <HabitDetailsStatistics />
+        <HabitDetailsStatistics
+          streak={habit?.streak}
+          createdAt={habit?.createdAt}
+        />
 
-        <Pressable className="mt-8  mb-10 rounded-2xl bg-emerald-500 py-4">
+        <Pressable
+          className={`mt-8 mb-10 rounded-2xl bg-emerald-500 py-4 ${
+            toggleCompletion.isPending ? "opacity-60" : ""
+          }`}
+          onPress={handleToggleCompletion}
+          disabled={toggleCompletion.isPending}
+        >
           <Text className="text-center text-lg font-semibold text-white">
-            Marcar como concluído
+            {completion ? "Desfazer conclusão" : "Marcar como concluído"}
           </Text>
         </Pressable>
       </ScrollView>

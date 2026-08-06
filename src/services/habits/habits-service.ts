@@ -12,7 +12,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/firebase/firebase";
-import type { Habit } from "./types";
+import type { Habit, HabitRequest } from "./types";
 
 function getCollection(uid: string) {
   if (!uid) {
@@ -22,13 +22,15 @@ function getCollection(uid: string) {
   return collection(db, "users", uid, "habits");
 }
 
-export async function createHabit(
-  data: Omit<Habit, "id" | "createdAt" | "updatedAt">,
-  uid: string,
-) {
+export async function createHabit(data: HabitRequest, uid: string) {
   const payload = Object.fromEntries(
     Object.entries({
       ...data,
+      streak: 0,
+      bestStreak: 0,
+      totalCompletions: 0,
+      lastCompletedDate: "",
+
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }).filter(([, value]) => value !== undefined),
@@ -64,11 +66,7 @@ export async function getHabitById(
   } as Habit;
 }
 
-export async function updateHabit(
-  id: string,
-  data: Partial<Omit<Habit, "id" | "createdAt" | "updatedAt">>,
-  uid: string,
-) {
+export async function updateHabit(id: string, data: HabitRequest, uid: string) {
   await updateDoc(doc(getCollection(uid), id), {
     ...data,
     updatedAt: serverTimestamp(),

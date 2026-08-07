@@ -1,4 +1,5 @@
 import { Loading } from "@/components/ui/loading/loading";
+import { ShowError } from "@/components/ui/show-error/show-error";
 import { useGetHabit } from "@/hooks/habits/use-get-habit";
 import { useUpdateHabit } from "@/hooks/habits/use-update-habit";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -148,6 +149,8 @@ export function UpdateHabitComponent() {
             goalType={goalType}
           />
           <HabitPreview icon={icon} title={title} description={description} />
+
+          <ShowError error={updateHabit.error} />
 
           <Pressable
             onPress={handleSubmit(handleUpdateHabit)}

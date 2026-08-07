@@ -41,6 +41,7 @@ export function HabitList({ habits }: HabitListProps) {
         }}
         renderItem={({ item }) => (
           <HabitCard
+            id={item.id}
             icon={item.icon}
             title={item.title}
             description={item.description}

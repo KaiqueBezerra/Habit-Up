@@ -1,8 +1,10 @@
-import { Clock3, EllipsisVertical } from "lucide-react-native";
+import { useGetTodayCompletion } from "@/hooks/habits/use-get-today-completion";
+import { CircleCheck, Clock3, EllipsisVertical } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 import { habitsDays } from "../consts";
 
 type HabitCardProps = {
+  id: string;
   icon: string;
   title: string;
   description?: string;
@@ -17,6 +19,7 @@ type HabitCardProps = {
 };
 
 export function HabitCard({
+  id,
   icon,
   title,
   description,
@@ -29,6 +32,8 @@ export function HabitCard({
   onPress,
   onMenuPress,
 }: HabitCardProps) {
+  const { data: completion } = useGetTodayCompletion(id);
+
   return (
     <Pressable
       onPress={onPress}
@@ -115,6 +120,12 @@ export function HabitCard({
             {goalType === "boolean" ? "1x" : `${goalValue} ${goalUnit}`}
           </Text>
         </View>
+
+        {completion && (
+          <View className="flex-row items-center rounded-full bg-zinc-800 px-3 py-2">
+            <CircleCheck color={"green"} />
+          </View>
+        )}
       </View>
     </Pressable>
   );

@@ -10,3 +10,26 @@ export const habitColors = [
 ];
 
 export const habitsDays = ["D", "S", "T", "Q", "Q", "S", "S"];
+
+export const habitExamples = [
+  {
+    icon: "💧",
+    title: "Beber 2L de água",
+    description: "Todos os dias",
+  },
+  {
+    icon: "🏃",
+    title: "Caminhar 30 minutos",
+    description: "Segunda a sexta",
+  },
+  {
+    icon: "📚",
+    title: "Ler 20 páginas",
+    description: "Antes de dormir",
+  },
+  {
+    icon: "🧘",
+    title: "Meditar 10 minutos",
+    description: "Ao acordar",
+  },
+];

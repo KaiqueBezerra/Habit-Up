@@ -2,7 +2,7 @@ import { getFormattedDate } from "@/helpers/get-formatted-date";
 import { getGreeting } from "@/helpers/get-greeting";
 import { Text, View } from "react-native";
 
-export function Greetings({ name }: { name?: string | null }) {
+export function HomeGreetings({ name }: { name?: string | null }) {
   return (
     <View className="gap-2">
       <Text className="text-3xl font-bold text-white">

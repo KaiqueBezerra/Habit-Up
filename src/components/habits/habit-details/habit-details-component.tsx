@@ -60,6 +60,7 @@ export function HabitDetailsComponent() {
   async function handleToggleCompletion() {
     await toggleCompletion.mutateAsync();
   }
+
   return (
     <View className="flex-1 bg-zinc-950">
       <ScrollView

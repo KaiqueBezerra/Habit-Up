@@ -27,7 +27,6 @@ export async function createHabit(data: HabitRequest, uid: string) {
     Object.entries({
       ...data,
       streak: 0,
-      bestStreak: 0,
       totalCompletions: 0,
       lastCompletedDate: "",
 
@@ -35,7 +34,6 @@ export async function createHabit(data: HabitRequest, uid: string) {
       updatedAt: serverTimestamp(),
     }).filter(([, value]) => value !== undefined),
   );
-
   return addDoc(getCollection(uid), payload);
 }
 
@@ -67,10 +65,14 @@ export async function getHabitById(
 }
 
 export async function updateHabit(id: string, data: HabitRequest, uid: string) {
-  await updateDoc(doc(getCollection(uid), id), {
-    ...data,
-    updatedAt: serverTimestamp(),
-  });
+  const payload = Object.fromEntries(
+    Object.entries({
+      ...data,
+      updatedAt: serverTimestamp(),
+    }).filter(([, value]) => value !== undefined),
+  );
+
+  await updateDoc(doc(getCollection(uid), id), payload);
 }
 
 export async function deleteHabit(id: string, uid: string) {

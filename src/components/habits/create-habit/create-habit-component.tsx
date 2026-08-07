@@ -1,3 +1,4 @@
+import { ShowError } from "@/components/ui/show-error/show-error";
 import { useCreateHabit } from "@/hooks/habits/use-create-habits";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
@@ -128,6 +129,8 @@ export function CreateHabitComponent() {
             goalType={goalType}
           />
           <HabitPreview icon={icon} title={title} description={description} />
+
+          <ShowError error={createHabit.error} />
 
           <Pressable
             onPress={handleSubmit(handleCreateHabit)}

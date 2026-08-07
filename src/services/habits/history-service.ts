@@ -81,3 +81,25 @@ export async function syncHabitStatistics(uid: string, habitId: string) {
     updatedAt: serverTimestamp(),
   });
 }
+
+export async function getTodayCompletedHabits(uid: string): Promise<string[]> {
+  const today = new Intl.DateTimeFormat("en-CA").format(new Date());
+
+  const habitsSnapshot = await getDocs(collection(db, "users", uid, "habits"));
+
+  const completedHabits: string[] = [];
+
+  await Promise.all(
+    habitsSnapshot.docs.map(async (habit) => {
+      const historyDoc = await getDocs(
+        collection(db, "users", uid, "habits", habit.id, "history"),
+      );
+
+      if (historyDoc.docs.some((doc) => doc.id === today)) {
+        completedHabits.push(habit.id);
+      }
+    }),
+  );
+
+  return completedHabits;
+}

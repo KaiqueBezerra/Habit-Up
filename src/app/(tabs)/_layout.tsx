@@ -1,10 +1,5 @@
 import { Tabs } from "expo-router";
-import {
-  ChartColumn,
-  CircleUserRound,
-  House,
-  NotebookPen,
-} from "lucide-react-native";
+import { CircleUserRound, House, NotebookPen } from "lucide-react-native";
 
 export default function TabsLayout() {
   return (
@@ -38,17 +33,6 @@ export default function TabsLayout() {
 
           tabBarIcon: ({ color, size }) => (
             <NotebookPen color={color} size={size} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="statistics"
-        options={{
-          title: "Estatísticas",
-
-          tabBarIcon: ({ color, size }) => (
-            <ChartColumn color={color} size={size} />
           ),
         }}
       />

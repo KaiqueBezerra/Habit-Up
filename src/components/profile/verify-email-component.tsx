@@ -90,11 +90,10 @@ export function VerifyEmailComponent() {
           </Text>
 
           <Text className="mt-3 text-base leading-6 text-zinc-400">
-            Enviaremos um e-mail para
-          </Text>
-
-          <Text className="mt-2 text-lg font-semibold text-emerald-400">
-            {user?.email}
+            Enviaremos um e-mail para{" "}
+            <Text className="mt-2 text-lg font-semibold text-emerald-400">
+              {user?.email}
+            </Text>
           </Text>
 
           <Text className="mt-3 text-base leading-6 text-zinc-400">

@@ -1,13 +1,17 @@
 import { HabitOptionsSheet } from "@/components/ui/bottom-sheet/habit-options-sheet";
 import { ConfirmModal } from "@/components/ui/confirm-modal/confirm-modal";
 import { Loading } from "@/components/ui/loading/loading";
+import { useAuth } from "@/context/auth-provider";
+import { calculateHabitSuccessRate } from "@/helpers/get-habit-success-rate";
 import { useDeleteHabit } from "@/hooks/habits/use-delete-habit";
 import { useGetHabit } from "@/hooks/habits/use-get-habit";
+import { useGetHabitHistory } from "@/hooks/habits/use-get-habit-history";
 import { useGetTodayCompletion } from "@/hooks/habits/use-get-today-completion";
 import { useToggleHabitCompletion } from "@/hooks/habits/use-toggle-habit-completion";
+import { useSyncHabitsStatistics } from "@/hooks/habits/useSyncHabitsStatistics";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { router, useLocalSearchParams } from "expo-router";
-import { useRef, useState } from "react";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useCallback, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { HabitDetailsDescription } from "./habit-details-description";
 import { HabitDetailsFrequency } from "./habit-details-frequency";
@@ -21,13 +25,17 @@ export function HabitDetailsComponent() {
     id: string;
   }>();
 
-  const { data: habit, isLoading: isHabitLoading } = useGetHabit(id);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const toggleCompletion = useToggleHabitCompletion(id);
+  const { user } = useAuth();
 
+  const { data: habit, isLoading: isHabitLoading } = useGetHabit(id);
   const deleteHabit = useDeleteHabit();
+
+  const toggleCompletion = useToggleHabitCompletion(id);
   const { data: completion } = useGetTodayCompletion(id);
+  const { data: completedDates = [] } = useGetHabitHistory(id);
+  const syncStatistics = useSyncHabitsStatistics();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -53,6 +61,14 @@ export function HabitDetailsComponent() {
     } catch {}
   }
 
+  useFocusEffect(
+    useCallback(() => {
+      if (user?.uid) {
+        syncStatistics.mutate();
+      }
+    }, [user?.uid]),
+  );
+
   if (isHabitLoading) {
     return <Loading />;
   }
@@ -60,6 +76,14 @@ export function HabitDetailsComponent() {
   async function handleToggleCompletion() {
     await toggleCompletion.mutateAsync();
   }
+
+  const statistics = habit
+    ? calculateHabitSuccessRate(
+        habit.createdAt.toDate(),
+        habit.daysOfWeek,
+        completedDates,
+      )
+    : null;
 
   return (
     <View className="flex-1 bg-zinc-950">
@@ -91,6 +115,9 @@ export function HabitDetailsComponent() {
         <HabitDetailsStatistics
           streak={habit?.streak}
           createdAt={habit?.createdAt}
+          successRate={statistics?.successRate ?? 0}
+          totalCompletions={habit?.totalCompletions ?? 0}
+          extraCompletions={statistics?.extraCompletions ?? 0}
         />
 
         <Pressable

@@ -36,7 +36,13 @@ const updateHabitSchema = z
       .string()
       .regex(/^$|^([01]\d|2[0-3]):([0-5]\d)$/, "Informe um horário válido"),
     goalType: z.enum(["boolean", "number"]),
-    goalValue: z.number().positive().optional(),
+    goalValue: z
+      .string()
+      .optional()
+      .refine(
+        (value) => !value || Number(value) > 0,
+        "A meta deve ser maior que zero",
+      ),
     goalUnit: z
       .string()
       .trim()
@@ -84,7 +90,7 @@ export function UpdateHabitComponent() {
       daysOfWeek: [],
       reminderTime: "",
       goalType: "boolean",
-      goalValue: undefined,
+      goalValue: "",
       goalUnit: "",
     },
   });
@@ -95,10 +101,17 @@ export function UpdateHabitComponent() {
   const icon = watch("icon");
   const title = watch("title");
   const description = watch("description");
+  const color = watch("color");
 
   async function handleUpdateHabit(data: UpdateHabitFormData) {
     try {
-      await updateHabit.mutateAsync(data);
+      await updateHabit.mutateAsync({
+        ...data,
+        goalValue:
+          data.goalType === "number" && data.goalValue
+            ? Number(data.goalValue)
+            : undefined,
+      });
 
       router.push("/(tabs)/habits");
     } catch {}
@@ -115,7 +128,7 @@ export function UpdateHabitComponent() {
       daysOfWeek: habit.daysOfWeek,
       reminderTime: habit.reminderTime ?? "",
       goalType: habit.goalType,
-      goalValue: habit.goalValue,
+      goalValue: habit.goalValue?.toString() ?? "",
       goalUnit: habit.goalUnit ?? "",
     });
   }, [habit, reset]);
@@ -148,7 +161,12 @@ export function UpdateHabitComponent() {
             errors={errors}
             goalType={goalType}
           />
-          <HabitPreview icon={icon} title={title} description={description} />
+          <HabitPreview
+            icon={icon}
+            title={title}
+            description={description}
+            color={color}
+          />
 
           <ShowError error={updateHabit.error} />
 

@@ -1,5 +1,8 @@
 import { useAuth } from "@/context/auth-provider";
+import { useSyncHabitsStatistics } from "@/hooks/habits/useSyncHabitsStatistics";
 import { useHomeData } from "@/hooks/use-home-data";
+import { useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 import { ScrollView } from "react-native";
 import { Loading } from "../ui/loading/loading";
 import { HomeEmpty } from "./home-empty";
@@ -12,6 +15,15 @@ import { HomeSummary } from "./home-summary";
 export function HomeComponent() {
   const { user } = useAuth();
   const { data, isLoading } = useHomeData();
+  const syncStatistics = useSyncHabitsStatistics();
+
+  useFocusEffect(
+    useCallback(() => {
+      if (user?.uid) {
+        syncStatistics.mutate();
+      }
+    }, [user?.uid]),
+  );
 
   if (isLoading) {
     return <Loading />;

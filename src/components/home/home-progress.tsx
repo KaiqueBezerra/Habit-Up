@@ -32,7 +32,7 @@ export function HomeProgress({
       <Text className="mt-1 text-emerald-100">
         {completedPercentage == 0
           ? "Você ainda não concluiu nenhum hábito hoje."
-          : `Você concluiu ${completedPercentage.toFixed(2)}% dos hábitos de hoje.`}
+          : `Você concluiu ${completedPercentage.toFixed(0)}% dos hábitos de hoje.`}
       </Text>
     </View>
   );

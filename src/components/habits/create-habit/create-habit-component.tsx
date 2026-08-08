@@ -34,7 +34,13 @@ const createHabitSchema = z
       .string()
       .regex(/^$|^([01]\d|2[0-3]):([0-5]\d)$/, "Informe um horário válido"),
     goalType: z.enum(["boolean", "number"]),
-    goalValue: z.number().positive().optional(),
+    goalValue: z
+      .string()
+      .optional()
+      .refine(
+        (value) => !value || Number(value) > 0,
+        "A meta deve ser maior que zero",
+      ),
     goalUnit: z
       .string()
       .trim()
@@ -44,7 +50,8 @@ const createHabitSchema = z
     (data) => {
       if (data.goalType === "number") {
         return (
-          data.goalValue !== undefined &&
+          !!data.goalValue &&
+          Number(data.goalValue) > 0 &&
           (data.goalUnit ?? "").trim().length > 0
         );
       }
@@ -52,11 +59,10 @@ const createHabitSchema = z
       return true;
     },
     {
-      path: ["goalUnit"],
-      message: "Informe a unidade da meta.",
+      path: ["goalValue"],
+      message: "Informe uma meta válida.",
     },
   );
-
 type CreateHabitFormData = z.infer<typeof createHabitSchema>;
 
 export function CreateHabitComponent() {
@@ -75,7 +81,7 @@ export function CreateHabitComponent() {
       daysOfWeek: [],
       reminderTime: "",
       goalType: "boolean",
-      goalValue: undefined,
+      goalValue: "",
       goalUnit: "",
     },
   });
@@ -86,10 +92,17 @@ export function CreateHabitComponent() {
   const icon = watch("icon");
   const title = watch("title");
   const description = watch("description");
+  const color = watch("color");
 
   async function handleCreateHabit(data: CreateHabitFormData) {
     try {
-      await createHabit.mutateAsync(data);
+      await createHabit.mutateAsync({
+        ...data,
+        goalValue:
+          data.goalType === "number" && data.goalValue
+            ? Number(data.goalValue)
+            : undefined,
+      });
 
       router.push("/(tabs)/habits");
     } catch {}
@@ -128,7 +141,12 @@ export function CreateHabitComponent() {
             errors={errors}
             goalType={goalType}
           />
-          <HabitPreview icon={icon} title={title} description={description} />
+          <HabitPreview
+            icon={icon}
+            title={title}
+            description={description}
+            color={color}
+          />
 
           <ShowError error={createHabit.error} />
 

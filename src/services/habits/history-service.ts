@@ -9,7 +9,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { calculateStreak } from "./calculate-streak";
+import { calculateStreak } from "../../helpers/calculate-streak";
 import { HabitHistory } from "./types";
 
 function getCollection(uid: string, habitId: string) {
@@ -18,6 +18,17 @@ function getCollection(uid: string, habitId: string) {
   }
 
   return collection(db, "users", uid, "habits", habitId, "history");
+}
+
+export async function getHabitHistory(
+  uid: string,
+  habitId: string,
+): Promise<string[]> {
+  const snapshot = await getDocs(
+    collection(db, "users", uid, "habits", habitId, "history"),
+  );
+
+  return snapshot.docs.map((doc) => doc.id);
 }
 
 export async function completeHabit(uid: string, habitId: string) {
@@ -65,7 +76,7 @@ export async function syncHabitStatistics(uid: string, habitId: string) {
 
   const snapshot = await getDocs(historyRef);
 
-  const dates = snapshot.docs.map((doc) => doc.id).sort(); // yyyy-MM-dd fica em ordem cronológica
+  const dates = snapshot.docs.map((doc) => doc.id).sort();
 
   const totalCompletions = dates.length;
 
@@ -80,6 +91,14 @@ export async function syncHabitStatistics(uid: string, habitId: string) {
     lastCompletedDate,
     updatedAt: serverTimestamp(),
   });
+}
+
+export async function syncAllHabitsStatistics(uid: string) {
+  const habitsSnapshot = await getDocs(collection(db, "users", uid, "habits"));
+
+  await Promise.all(
+    habitsSnapshot.docs.map((habit) => syncHabitStatistics(uid, habit.id)),
+  );
 }
 
 export async function getTodayCompletedHabits(uid: string): Promise<string[]> {

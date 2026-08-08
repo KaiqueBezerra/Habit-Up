@@ -31,7 +31,7 @@ export function HomeNextHabitsItem({
     >
       <View className="flex-row items-center">
         <View
-          className="mr-4 h-14 w-14 items-center justify-center rounded-2x"
+          className="mr-4 h-14 w-14 items-center justify-center rounded-2xl"
           style={{ backgroundColor: `${color}25` }}
         >
           <Text className="text-3xl">{icon}</Text>

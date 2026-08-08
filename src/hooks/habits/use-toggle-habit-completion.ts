@@ -51,6 +51,10 @@ export function useToggleHabitCompletion(habitId: string) {
       queryClient.invalidateQueries({
         queryKey: ["today-completed-habits", user?.uid],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["habit-history", habitId],
+      });
     },
   });
 }

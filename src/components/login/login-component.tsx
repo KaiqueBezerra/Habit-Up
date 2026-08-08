@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { z } from "zod";
+import { Button } from "../ui/button/button";
 import { ShowError } from "../ui/show-error/show-error";
 
 const loginSchema = z.object({
@@ -125,17 +126,13 @@ export default function LoginComponent() {
         </Text>
       </Pressable>
 
-      <Pressable
-        disabled={isSubmitting}
+      <Button
+        title={isSubmitting ? "Entrando..." : "Entrar"}
         onPress={handleSubmit(handleLogin)}
-        className={`mt-10 rounded-2xl bg-emerald-500 py-4 ${
-          isSubmitting ? "opacity-60" : ""
-        }`}
-      >
-        <Text className="text-center text-lg font-semibold text-white">
-          {isSubmitting ? "Entrando..." : "Entrar"}
-        </Text>
-      </Pressable>
+        loading={isSubmitting}
+        className="mt-10"
+        variant="primary"
+      />
 
       <View className="mt-10 flex-row justify-center">
         <Text className="text-zinc-400">Ainda não possui conta?</Text>

@@ -13,6 +13,7 @@ import {
   View,
 } from "react-native";
 import z from "zod";
+import { Button } from "../ui/button/button";
 import { ShowError } from "../ui/show-error/show-error";
 
 const registerSchema = z.object({
@@ -150,17 +151,12 @@ export default function Register() {
 
         <ShowError error={register.error} />
 
-        <Pressable
-          disabled={isSubmitting}
+        <Button
+          title={isSubmitting ? "Criando..." : "Criar conta"}
           onPress={handleSubmit(handleRegister)}
-          className={`rounded-2xl bg-emerald-500 py-4 ${
-            isSubmitting && "opacity-60"
-          }`}
-        >
-          <Text className="text-center text-lg font-semibold text-white">
-            {isSubmitting ? "Criando..." : "Criar conta"}
-          </Text>
-        </Pressable>
+          loading={isSubmitting}
+          variant="primary"
+        />
 
         <Pressable onPress={() => router.back()}>
           <Text className="text-center text-emerald-400">

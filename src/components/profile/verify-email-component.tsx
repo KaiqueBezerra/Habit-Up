@@ -4,6 +4,7 @@ import { useVerifyEmail } from "@/hooks/auth/use-verify-email";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { Button } from "../ui/button/button";
 import { ShowError } from "../ui/show-error/show-error";
 
 export function VerifyEmailComponent() {
@@ -45,14 +46,12 @@ export function VerifyEmailComponent() {
         </View>
 
         <View className="mt-6">
-          <Pressable
+          <Button
+            title={"Voltar"}
             onPress={() => router.push("/(tabs)/profile")}
-            className="mt-10 rounded-2xl bg-emerald-500 py-4"
-          >
-            <Text className="text-center text-lg font-semibold text-white">
-              Voltar
-            </Text>
-          </Pressable>
+            className="mt-4"
+            variant="primary"
+          />
         </View>
       </View>
     );
@@ -67,11 +66,11 @@ export function VerifyEmailComponent() {
           </Text>
 
           <Text className="mt-3 text-base leading-6 text-zinc-400">
-            Enviamos um link de verificação para
-          </Text>
-
-          <Text className="mt-2 text-lg font-semibold text-emerald-400">
-            {user?.email}
+            Enviamos um link de verificação para{" "}
+            <Text className="text-lg font-semibold text-emerald-400">
+              {" "}
+              {user?.email}{" "}
+            </Text>{" "}
           </Text>
 
           <Text className="mt-3 text-base leading-6 text-zinc-400">
@@ -108,37 +107,29 @@ export function VerifyEmailComponent() {
       <View>
         {emailSent ? (
           <>
-            <Pressable
+            <Button
+              title={"Já confirmei meu e-mail"}
               onPress={handleReloadUser}
-              className="mt-6 rounded-2xl border border-emerald-500 py-4"
-            >
-              <Text className="text-center text-lg font-semibold text-emerald-400">
-                Já confirmei meu e-mail
-              </Text>
-            </Pressable>
+              className="mt-4"
+              variant="outline"
+            />
 
-            <Pressable
+            <Button
+              title={"Voltar"}
               onPress={() => router.push("/(tabs)/profile")}
-              className="mt-4 rounded-2xl bg-emerald-500 py-4"
-            >
-              <Text className="text-center text-lg font-semibold text-white">
-                Voltar
-              </Text>
-            </Pressable>
+              className="mt-4"
+              variant="primary"
+            />
           </>
         ) : (
           <>
-            <Pressable
-              disabled={verifyEmail.isPending}
+            <Button
+              title={verifyEmail.isPending ? "Enviando..." : "Enviar e-mail"}
               onPress={() => handleVerifyEmail()}
-              className={`mt-10 rounded-2xl bg-emerald-500 py-4 ${
-                verifyEmail.isPending ? "opacity-60" : ""
-              }`}
-            >
-              <Text className="text-center text-lg font-semibold text-white">
-                {verifyEmail.isPending ? "Enviando..." : "Enviar e-mail"}
-              </Text>
-            </Pressable>
+              loading={verifyEmail.isPending}
+              className="mt-6"
+              variant="primary"
+            />
 
             <Pressable
               className="mt-5"

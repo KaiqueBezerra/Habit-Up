@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import z from "zod";
+import { Button } from "../ui/button/button";
 import { ShowError } from "../ui/show-error/show-error";
 
 const updateProfileSchema = z.object({
@@ -85,17 +86,13 @@ export function UpdateProfileComponent() {
       <ShowError error={updateProfile.error} />
 
       <View>
-        <Pressable
-          disabled={isSubmitting}
+        <Button
+          title={isSubmitting ? "Salvando..." : "Salvar alterações"}
           onPress={handleSubmit(handleUpdateProfile)}
-          className={`mt-10 rounded-2xl bg-emerald-500 py-4 ${
-            isSubmitting ? "opacity-60" : ""
-          }`}
-        >
-          <Text className="text-center text-lg font-semibold text-white">
-            {isSubmitting ? "Salvando..." : "Salvar alterações"}
-          </Text>
-        </Pressable>
+          loading={isSubmitting}
+          className="mt-6"
+          variant="primary"
+        />
       </View>
 
       <Pressable

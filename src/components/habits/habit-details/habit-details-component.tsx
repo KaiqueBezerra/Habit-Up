@@ -1,4 +1,5 @@
 import { HabitOptionsSheet } from "@/components/ui/bottom-sheet/habit-options-sheet";
+import { Button } from "@/components/ui/button/button";
 import { ConfirmModal } from "@/components/ui/confirm-modal/confirm-modal";
 import { Loading } from "@/components/ui/loading/loading";
 import { useAuth } from "@/context/auth-provider";
@@ -12,7 +13,7 @@ import { useSyncHabitsStatistics } from "@/hooks/habits/useSyncHabitsStatistics"
 import BottomSheet from "@gorhom/bottom-sheet";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useRef, useState } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { HabitDetailsDescription } from "./habit-details-description";
 import { HabitDetailsFrequency } from "./habit-details-frequency";
 import { HabitDetailsHeader } from "./habit-details-header";
@@ -120,17 +121,13 @@ export function HabitDetailsComponent() {
           extraCompletions={statistics?.extraCompletions ?? 0}
         />
 
-        <Pressable
-          className={`mt-8 mb-10 rounded-2xl bg-emerald-500 py-4 ${
-            toggleCompletion.isPending ? "opacity-60" : ""
-          }`}
+        <Button
+          title={completion ? "Desfazer conclusão" : "Marcar como concluído"}
           onPress={handleToggleCompletion}
-          disabled={toggleCompletion.isPending}
-        >
-          <Text className="text-center text-lg font-semibold text-white">
-            {completion ? "Desfazer conclusão" : "Marcar como concluído"}
-          </Text>
-        </Pressable>
+          loading={toggleCompletion.isPending}
+          className="mt-8 mb-10"
+          variant="primary"
+        />
       </ScrollView>
 
       <HabitOptionsSheet

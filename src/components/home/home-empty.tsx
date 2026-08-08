@@ -1,6 +1,7 @@
 import { router } from "expo-router";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { habitExamples } from "../habits/consts";
+import { Button } from "../ui/button/button";
 
 export function HomeEmpty() {
   return (
@@ -17,14 +18,12 @@ export function HomeEmpty() {
             Comece adicionando o primeiro para acompanhar sua evolução diária.
           </Text>
 
-          <Pressable
+          <Button
+            title={"Criar primeiro hábito"}
             onPress={() => router.push("/(screens)/create-habit")}
-            className="mt-8 w-full rounded-2xl bg-emerald-500 py-4 active:opacity-80"
-          >
-            <Text className="text-center text-lg font-semibold text-white">
-              Criar primeiro hábito
-            </Text>
-          </Pressable>
+            className="w-full mt-8"
+            variant="primary"
+          />
         </View>
 
         <View className="mt-8 border-t border-zinc-800 pt-6">

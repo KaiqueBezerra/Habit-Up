@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button/button";
 import { ShowError } from "@/components/ui/show-error/show-error";
 import { useCreateHabit } from "@/hooks/habits/use-create-habits";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -150,17 +151,13 @@ export function CreateHabitComponent() {
 
           <ShowError error={createHabit.error} />
 
-          <Pressable
+          <Button
+            title={isSubmitting ? "Criando..." : "Criar hábito"}
             onPress={handleSubmit(handleCreateHabit)}
-            disabled={isSubmitting}
-            className={`rounded-2xl bg-emerald-500 py-4 ${
-              isSubmitting && "opacity-60"
-            }`}
-          >
-            <Text className="text-center text-lg font-semibold text-white">
-              {isSubmitting ? "Criando..." : "Criar hábito"}
-            </Text>
-          </Pressable>
+            loading={isSubmitting}
+            className="mb-10"
+            variant="primary"
+          />
         </View>
       </View>
     </ScrollView>

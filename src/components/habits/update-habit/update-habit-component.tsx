@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button/button";
 import { Loading } from "@/components/ui/loading/loading";
 import { ShowError } from "@/components/ui/show-error/show-error";
 import { useGetHabit } from "@/hooks/habits/use-get-habit";
@@ -6,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import z from "zod";
 import { HabitBasicInfo } from "../habit-form/habit-basic-info";
 import { HabitColorPicker } from "../habit-form/habit-color-picker";
@@ -170,17 +171,13 @@ export function UpdateHabitComponent() {
 
           <ShowError error={updateHabit.error} />
 
-          <Pressable
+          <Button
+            title={isSubmitting ? "Salvando..." : "Salvar alterações"}
             onPress={handleSubmit(handleUpdateHabit)}
-            disabled={isSubmitting}
-            className={`rounded-2xl bg-emerald-500 py-4 ${
-              isSubmitting && "opacity-60"
-            }`}
-          >
-            <Text className="text-center text-lg font-semibold text-white">
-              {isSubmitting ? "Salvando..." : "Salvar alterações"}
-            </Text>
-          </Pressable>
+            loading={isSubmitting}
+            className="mb-10"
+            variant="primary"
+          />
         </View>
       </View>
     </ScrollView>

@@ -3,6 +3,7 @@ import { useResetPassword } from "@/hooks/auth/use-reset-password";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
+import { Button } from "../ui/button/button";
 import { ShowError } from "../ui/show-error/show-error";
 
 export function ChangePasswordComponent() {
@@ -59,27 +60,19 @@ export function ChangePasswordComponent() {
 
       <View className="mt-6">
         {emailSent ? (
-          <Pressable
+          <Button
+            title={"Voltar"}
             onPress={() => router.back()}
-            className="mt-10 rounded-2xl bg-emerald-500 py-4"
-          >
-            <Text className="text-center text-lg font-semibold text-white">
-              Voltar
-            </Text>
-          </Pressable>
+            variant="primary"
+          />
         ) : (
           <>
-            <Pressable
-              disabled={resetPassword.isPending}
+            <Button
+              title={resetPassword.isPending ? "Enviando..." : "Enviar"}
               onPress={() => handleResetPassword()}
-              className={`mt-10 rounded-2xl bg-emerald-500 py-4 ${
-                resetPassword.isPending ? "opacity-60" : ""
-              }`}
-            >
-              <Text className="text-center text-lg font-semibold text-white">
-                {resetPassword.isPending ? "Enviando..." : "Enviar"}
-              </Text>
-            </Pressable>
+              loading={resetPassword.isPending}
+              variant="primary"
+            />
 
             <Pressable
               className="mt-5"

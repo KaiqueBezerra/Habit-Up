@@ -12,6 +12,11 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/firebase/firebase";
+import {
+  cancelHabitNotifications,
+  rescheduleHabitNotifications,
+  scheduleHabitNotifications,
+} from "../notifications/notification-service";
 import type { Habit, HabitRequest } from "./types";
 
 function getCollection(uid: string) {
@@ -29,12 +34,28 @@ export async function createHabit(data: HabitRequest, uid: string) {
       streak: 0,
       totalCompletions: 0,
       lastCompletedDate: "",
-
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     }).filter(([, value]) => value !== undefined),
   );
-  return addDoc(getCollection(uid), payload);
+
+  const habitRef = await addDoc(getCollection(uid), payload);
+
+  try {
+    if (data.reminderTime && data.daysOfWeek.length > 0) {
+      await scheduleHabitNotifications({
+        habitId: habitRef.id,
+        title: data.title,
+        icon: data.icon,
+        reminderTime: data.reminderTime,
+        daysOfWeek: data.daysOfWeek,
+      });
+    }
+  } catch (error) {
+    console.error("Erro ao agendar notificações:", error);
+  }
+
+  return habitRef;
 }
 
 export async function getHabits(uid: string): Promise<Habit[]> {
@@ -73,8 +94,26 @@ export async function updateHabit(id: string, data: HabitRequest, uid: string) {
   );
 
   await updateDoc(doc(getCollection(uid), id), payload);
+
+  try {
+    await rescheduleHabitNotifications({
+      habitId: id,
+      title: data.title,
+      icon: data.icon,
+      reminderTime: data.reminderTime,
+      daysOfWeek: data.daysOfWeek,
+    });
+  } catch (error) {
+    console.error("Erro ao atualizar notificações:", error);
+  }
 }
 
 export async function deleteHabit(id: string, uid: string) {
+  try {
+    await cancelHabitNotifications(id);
+  } catch (error) {
+    console.error("Erro ao cancelar notificações:", error);
+  }
+
   await deleteDoc(doc(getCollection(uid), id));
 }

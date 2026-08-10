@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/auth-provider";
+import { appToast } from "@/helpers/toast";
 import { queryClient } from "@/lib/react-query";
 import { createHabit } from "@/services/habits/habits-service";
 import { HabitRequest } from "@/services/habits/types";
@@ -14,6 +15,12 @@ export function useCreateHabit() {
       queryClient.invalidateQueries({
         queryKey: ["habits", user?.uid],
       });
+
+      appToast.success("Hábito criado com sucesso!");
+    },
+
+    onError() {
+      appToast.error("Não foi possível criar o hábito.");
     },
   });
 }

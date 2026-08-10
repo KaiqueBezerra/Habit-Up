@@ -1,4 +1,5 @@
 import { useAuth } from "@/context/auth-provider";
+import { appToast } from "@/helpers/toast";
 import { queryClient } from "@/lib/react-query";
 import {
   completeHabit,
@@ -35,7 +36,7 @@ export function useToggleHabitCompletion(habitId: string) {
       };
     },
 
-    onSuccess() {
+    onSuccess(data) {
       queryClient.invalidateQueries({
         queryKey: ["habits", user?.uid],
       });
@@ -55,6 +56,16 @@ export function useToggleHabitCompletion(habitId: string) {
       queryClient.invalidateQueries({
         queryKey: ["habit-history", habitId],
       });
+
+      if (data.completed) {
+        appToast.success("Hábito concluído! 🎉");
+      } else {
+        appToast.info("Conclusão desfeita.");
+      }
+    },
+
+    onError() {
+      appToast.error("Não foi possível atualizar o hábito.");
     },
   });
 }

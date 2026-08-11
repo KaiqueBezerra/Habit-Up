@@ -21,6 +21,7 @@ export function HomeNextHabit({ nextHabits }: HomeNextHabitProps) {
             title={item.title}
             color={item.color}
             icon={item.icon}
+            reminderTime={item.reminderTime}
           />
         ))}
       </View>

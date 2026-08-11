@@ -1,3 +1,4 @@
+import { isReminderTimePassed } from "@/helpers/is-reminder-time-passed";
 import { router } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
@@ -16,6 +17,8 @@ export function HomeNextHabitsItem({
   icon,
   reminderTime,
 }: HomeNextHabitsItemProps) {
+  const reminderPassed = isReminderTimePassed(reminderTime);
+
   return (
     <Pressable
       className="rounded-3xl border border-zinc-800 
@@ -41,7 +44,9 @@ export function HomeNextHabitsItem({
           <Text className="text-lg font-semibold text-white">{title}</Text>
 
           {reminderTime && (
-            <Text className="mt-1 text-zinc-400">{reminderTime}</Text>
+            <Text className={reminderPassed ? "text-red-500" : "text-zinc-400"}>
+              {reminderTime}
+            </Text>
           )}
         </View>
       </View>

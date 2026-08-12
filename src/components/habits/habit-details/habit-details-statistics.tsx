@@ -7,6 +7,7 @@ type HabitDetailsStatisticsProps = {
   successRate: number;
   totalCompletions: number;
   extraCompletions: number;
+  opportunities: number | undefined;
 };
 
 export function HabitDetailsStatistics({
@@ -15,6 +16,7 @@ export function HabitDetailsStatistics({
   successRate,
   totalCompletions,
   extraCompletions,
+  opportunities,
 }: HabitDetailsStatisticsProps) {
   return (
     <View className="mt-5 rounded-3xl border border-zinc-800 bg-zinc-900 p-5">
@@ -32,9 +34,16 @@ export function HabitDetailsStatistics({
         </View>
 
         <View className="flex-row justify-between">
-          <Text className="text-zinc-400">Conclusões extras</Text>
-          <Text className="font-semibold text-white">{extraCompletions}</Text>
+          <Text className="text-zinc-400">Oportunidades de conclusões</Text>
+          <Text className="font-semibold text-white">{opportunities}</Text>
         </View>
+
+        {extraCompletions > 0 && (
+          <View className="flex-row justify-between">
+            <Text className="text-zinc-400">Conclusões extras</Text>
+            <Text className="font-semibold text-white">{extraCompletions}</Text>
+          </View>
+        )}
 
         <View className="flex-row justify-between">
           <Text className="text-zinc-400">Taxa de sucesso</Text>

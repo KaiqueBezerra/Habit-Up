@@ -72,20 +72,33 @@ export async function isHabitCompleted(
 }
 
 export async function syncHabitStatistics(uid: string, habitId: string) {
+  const habitRef = doc(db, "users", uid, "habits", habitId);
+
   const historyRef = collection(db, "users", uid, "habits", habitId, "history");
 
-  const snapshot = await getDocs(historyRef);
+  const [habitSnapshot, historySnapshot] = await Promise.all([
+    getDoc(habitRef),
+    getDocs(historyRef),
+  ]);
 
-  const dates = snapshot.docs.map((doc) => doc.id).sort();
+  if (!habitSnapshot.exists()) {
+    throw new Error("Hábito não encontrado.");
+  }
+
+  const habit = habitSnapshot.data();
+
+  const daysOfWeek = habit.daysOfWeek ?? [];
+
+  const dates = historySnapshot.docs.map((doc) => doc.id).sort();
 
   const totalCompletions = dates.length;
 
   const lastCompletedDate =
     totalCompletions > 0 ? dates[totalCompletions - 1] : "";
 
-  const streak = calculateStreak(dates);
+  const streak = calculateStreak(dates, daysOfWeek);
 
-  await updateDoc(doc(db, "users", uid, "habits", habitId), {
+  await updateDoc(habitRef, {
     streak,
     totalCompletions,
     lastCompletedDate,

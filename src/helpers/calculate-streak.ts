@@ -1,40 +1,48 @@
-export function calculateStreak(dates: string[]) {
-  if (dates.length === 0) {
+export function calculateStreak(dates: string[], daysOfWeek: number[]) {
+  if (dates.length === 0 || daysOfWeek.length === 0) {
     return 0;
   }
 
-  const sortedDates = [...new Set(dates)].sort();
+  const completedDates = new Set(dates);
 
-  const today = new Intl.DateTimeFormat("en-CA").format(new Date());
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  const yesterdayDate = new Date(`${today}T00:00:00Z`);
-  yesterdayDate.setUTCDate(yesterdayDate.getUTCDate() - 1);
+  let current = new Date(today);
 
-  const yesterday = yesterdayDate.toISOString().slice(0, 10);
+  let streak = 0;
+  let hasCompletedOpportunity = false;
 
-  const lastDate = sortedDates[sortedDates.length - 1];
+  while (true) {
+    const dayOfWeek = current.getDay();
 
-  // Se a última conclusão não foi hoje nem ontem,
-  // a sequência já foi quebrada.
-  if (lastDate !== today && lastDate !== yesterday) {
-    return 0;
-  }
+    // Se hoje ainda não terminou, não consideramos
+    // a ausência de conclusão como quebra.
+    const isToday = current.getTime() === today.getTime();
 
-  let streak = 1;
+    if (daysOfWeek.includes(dayOfWeek)) {
+      const date = new Intl.DateTimeFormat("en-CA").format(current);
 
-  const current = new Date(`${lastDate}T00:00:00Z`);
-
-  for (let i = sortedDates.length - 2; i >= 0; i--) {
-    current.setUTCDate(current.getUTCDate() - 1);
-
-    const expected = current.toISOString().slice(0, 10);
-
-    if (sortedDates[i] !== expected) {
-      break;
+      if (completedDates.has(date)) {
+        streak++;
+        hasCompletedOpportunity = true;
+      } else if (isToday) {
+        // Hoje ainda está em andamento.
+        break;
+      } else {
+        // Era um dia planejado e já passou sem conclusão.
+        break;
+      }
     }
 
-    streak++;
+    // Volta um dia.
+    current.setDate(current.getDate() - 1);
+
+    // Evita procurar indefinidamente no passado.
+    if (current < new Date("2000-01-01")) {
+      break;
+    }
   }
 
-  return streak;
+  return hasCompletedOpportunity ? streak : 0;
 }

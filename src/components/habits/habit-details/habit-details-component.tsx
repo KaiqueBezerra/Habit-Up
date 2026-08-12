@@ -119,6 +119,7 @@ export function HabitDetailsComponent() {
           successRate={statistics?.successRate ?? 0}
           totalCompletions={habit?.totalCompletions ?? 0}
           extraCompletions={statistics?.extraCompletions ?? 0}
+          opportunities={statistics?.opportunities}
         />
 
         <Button

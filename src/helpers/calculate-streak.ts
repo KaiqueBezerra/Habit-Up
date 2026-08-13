@@ -15,33 +15,34 @@ export function calculateStreak(dates: string[], daysOfWeek: number[]) {
 
   while (true) {
     const dayOfWeek = current.getDay();
-
-    // Se hoje ainda não terminou, não consideramos
-    // a ausência de conclusão como quebra.
     const isToday = current.getTime() === today.getTime();
 
-    if (daysOfWeek.includes(dayOfWeek)) {
-      const date = new Intl.DateTimeFormat("en-CA").format(current);
-
-      if (completedDates.has(date)) {
-        streak++;
-        hasCompletedOpportunity = true;
-      } else if (isToday) {
-        // Hoje ainda está em andamento.
-        break;
-      } else {
-        // Era um dia planejado e já passou sem conclusão.
-        break;
-      }
+    // Dias que não fazem parte do planejamento são ignorados.
+    if (!daysOfWeek.includes(dayOfWeek)) {
+      current.setDate(current.getDate() - 1);
+      continue;
     }
 
-    // Volta um dia.
-    current.setDate(current.getDate() - 1);
+    const date = new Intl.DateTimeFormat("en-CA").format(current);
 
-    // Evita procurar indefinidamente no passado.
-    if (current < new Date("2000-01-01")) {
-      break;
+    // Dia planejado e concluído.
+    if (completedDates.has(date)) {
+      streak++;
+      hasCompletedOpportunity = true;
+
+      current.setDate(current.getDate() - 1);
+      continue;
     }
+
+    // Se é hoje e ainda não foi concluído,
+    // não consideramos isso uma quebra do streak.
+    if (isToday) {
+      current.setDate(current.getDate() - 1);
+      continue;
+    }
+
+    // Era um dia planejado que já passou sem conclusão.
+    break;
   }
 
   return hasCompletedOpportunity ? streak : 0;

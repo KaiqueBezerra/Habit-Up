@@ -1,56 +1,144 @@
-# Welcome to your Expo app 👋
+# Habit Up
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern habit tracking application built with Expo and React Native to help users build and maintain positive habits.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **User Authentication**
+  - Email/password registration and login
+  - Password recovery
+  - Email verification
+  - Profile management
+  - Account deletion
 
-   ```bash
-   npm install
-   ```
+- **Habit Management**
+  - Create custom habits with icons and colors
+  - Set daily, weekly, or custom frequency
+  - Define goals (boolean or numeric)
+  - Set reminder notifications
+  - Track habit completion history
+  - View detailed statistics and streaks
 
-2. Start the app
+- **Dashboard**
+  - Home screen with daily overview
+  - Progress tracking
+  - Next habits to complete
+  - Statistics and summaries
 
-   ```bash
-   npx expo start
-   ```
+- **User Interface**
+  - Dark theme design
+  - Smooth animations with React Native Reanimated
+  - Bottom sheets and modals
+  - Toast notifications
+  - Tab-based navigation
 
-In the output, you'll find options to open the app in a
+## Tech Stack
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **Framework**: Expo SDK 57 with React Native 0.86
+- **Language**: TypeScript
+- **Navigation**: Expo Router (file-based routing)
+- **Styling**: NativeWind (Tailwind CSS for React Native)
+- **State Management**: React Query (TanStack Query)
+- **Backend**: Firebase (Authentication, Firestore)
+- **Forms**: React Hook Form with Zod validation
+- **UI Components**:
+  - React Native Gesture Handler
+  - React Native Reanimated
+  - @gorhom/bottom-sheet
+  - Lucide React Native icons
+  - Sonner Native for toasts
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Project Structure
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+src/
+├── app/                    # Expo Router pages
+│   ├── (auth)/            # Authentication screens
+│   ├── (screens)/         # Main feature screens
+│   └── (tabs)/            # Tab navigation screens
+├── components/            # Reusable components
+│   ├── habits/           # Habit-related components
+│   ├── home/             # Home screen components
+│   ├── login/            # Authentication components
+│   ├── profile/          # Profile components
+│   └── ui/               # UI components (buttons, modals, etc.)
+├── context/              # React Context providers
+├── firebase/             # Firebase configuration
+├── helpers/              # Utility functions
+├── hooks/                # Custom React hooks
+│   ├── auth/            # Authentication hooks
+│   └── habits/          # Habit management hooks
+├── lib/                  # Library configurations
+├── services/             # API and business logic
+│   ├── auth/            # Authentication services
+│   ├── habits/          # Habit services
+│   └── notifications/   # Notification services
+└── styles/               # Global styles
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Getting Started
 
-### Other setup steps
+### Prerequisites
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- Node.js (v18 or higher)
+- pnpm (package manager)
+- Expo CLI
+- Android Studio or Xcode (for mobile development)
 
-## Learn more
+### Installation
 
-To learn more about developing your project with Expo, look at the following resources:
+1. Clone the repository
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+   ```bash
+   git clone <repository-url>
+   cd Habit-Up
+   ```
 
-## Join the community
+2. Install dependencies
 
-Join our community of developers creating universal apps.
+   ```bash
+   pnpm install
+   ```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3. Set up environment variables
+   - Copy `.env.local` example and configure your Firebase credentials
+   - Ensure Firebase Authentication and Firestore are enabled
+
+4. Start the development server
+   ```bash
+   pnpm start
+   ```
+
+### Running the App
+
+- **iOS Simulator**: `pnpm ios`
+- **Android Emulator**: `pnpm android`
+- **Web**: `pnpm web`
+- **Expo Go**: Scan QR code from Expo Dev Tools
+
+## Available Scripts
+
+- `pnpm start` - Start the development server
+- `pnpm android` - Run on Android emulator/device
+- `pnpm ios` - Run on iOS simulator/device
+- `pnpm web` - Run in web browser
+- `pnpm lint` - Run ESLint
+
+## Firebase Configuration
+
+The app uses Firebase for authentication and data storage. Make sure to configure:
+
+1. **Authentication**: Enable Email/Password provider
+2. **Firestore Database**: Create database with appropriate rules
+3. **Environment Variables**: Set Firebase config in `.env.local`
+
+## Development Notes
+
+- The project uses Expo SDK 57 - refer to [versioned docs](https://docs.expo.dev/versions/v57.0.0/)
+- File-based routing is used via Expo Router
+- TypeScript is configured for type safety
+- Tailwind CSS classes are used for styling via NativeWind
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
